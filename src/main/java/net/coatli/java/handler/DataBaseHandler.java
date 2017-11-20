@@ -1,5 +1,7 @@
 package net.coatli.java.handler;
 
+import static net.coatli.java.UndertowNonBlockingChainApplication.CORRELATION_ID;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -15,10 +17,10 @@ public class DataBaseHandler implements HttpHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(DataBaseHandler.class);
 
-  private static final int CORE_POOL_SIZE          = 2000;
-  private static final int MAXIMUM_POOL_SIZE       = 4000;
+  private static final int CORE_POOL_SIZE          = 200;
+  private static final int MAXIMUM_POOL_SIZE       = 300;
   private static final int KEEP_ALIVE_TIME         = 200;
-  private static final int BLOCKING_QUEUE_CAPACITY = 4000;
+  private static final int BLOCKING_QUEUE_CAPACITY = 300;
 
   private static ExecutorService EXECUTOR = new ThreadPoolExecutor(
                                               CORE_POOL_SIZE,
@@ -38,7 +40,7 @@ public class DataBaseHandler implements HttpHandler {
 
     exchange.dispatch(EXECUTOR, () -> {
 
-      LOGGER.info("Executing in {} thread pool", this.getClass().getSimpleName());
+      LOGGER.info("Save {}", exchange.getRequestHeaders().getFirst(CORRELATION_ID));
 
       exchange.getResponseSender().send(String.format("%s send response", this.getClass().getName()));
 

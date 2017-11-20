@@ -24,11 +24,11 @@
     <project.build.jdk.source>${java.version}</project.build.jdk.source>
     <project.build.jdk.target>${java.version}</project.build.jdk.target>
 
-    <maven.compiler.plugin.version>3.1</maven.compiler.plugin.version>
-    <maven.shade.plugin.version>2.1</maven.shade.plugin.version>
-    <exec.maven.plugin.version>1.5.0</exec.maven.plugin.version>
+    <maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
+    <maven.shade.plugin.version>3.1.0</maven.shade.plugin.version>
+    <exec.maven.plugin.version>1.6.0</exec.maven.plugin.version>
 
-    <undertow.core.version>1.4.12.Final</undertow.core.version>
+    <undertow.core.version>1.4.21.Final</undertow.core.version>
     <logback.classic.version>1.2.3</logback.classic.version>
   </properties>
 

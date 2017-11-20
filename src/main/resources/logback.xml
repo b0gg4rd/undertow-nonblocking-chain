@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+  <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+    <Marker>PROFILER</Marker>
+    <OnMatch>NEUTRAL</OnMatch>
+  </turboFilter>
+
   <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
-    <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder 
-      by default -->
+    <immediateFlush>true</immediateFlush>
     <encoder>
-      <pattern>%d{HH:mm:ss.SSS} [%thread] %X{sId} %X{cId} %-5level %logger{36} %M - %msg%n</pattern>
+      <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %X{cId} %class{36}:%L %M - %msg%n</pattern>
     </encoder>
   </appender>
 
-  <root level="info">
-    <appender-ref ref="stdout" />
-  </root>
+  <root level="error" />
+
+  <logger name="net.coatli.java" level="info">
+    <appender-ref ref="stdout"/>
+  </logger>
 </configuration>

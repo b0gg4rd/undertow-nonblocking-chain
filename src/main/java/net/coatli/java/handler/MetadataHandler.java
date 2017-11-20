@@ -1,5 +1,7 @@
 package net.coatli.java.handler;
 
+import static net.coatli.java.UndertowNonBlockingChainApplication.CORRELATION_ID;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -15,10 +17,10 @@ public class MetadataHandler implements HttpHandler {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(MetadataHandler.class);
 
-  private static final int CORE_POOL_SIZE          = 2000;
-  private static final int MAXIMUM_POOL_SIZE       = 4000;
+  private static final int CORE_POOL_SIZE          = 40;
+  private static final int MAXIMUM_POOL_SIZE       = 80;
   private static final int KEEP_ALIVE_TIME         = 200;
-  private static final int BLOCKING_QUEUE_CAPACITY = 4000;
+  private static final int BLOCKING_QUEUE_CAPACITY = 80;
 
   private static ExecutorService EXECUTOR = new ThreadPoolExecutor(
                                               CORE_POOL_SIZE,
@@ -28,10 +30,10 @@ public class MetadataHandler implements HttpHandler {
                                               new LinkedBlockingQueue<Runnable>(BLOCKING_QUEUE_CAPACITY),
                                               new ThreadPoolExecutor.CallerRunsPolicy());
 
-  private final DataBaseHandler dataBaseHandler;
+  private final HttpHandler next;
 
-  public MetadataHandler(final DataBaseHandler dataBaseHandler) {
-    this.dataBaseHandler = dataBaseHandler;
+  public MetadataHandler(final HttpHandler next) {
+    this.next = next;
   }
 
   @Override
@@ -44,13 +46,13 @@ public class MetadataHandler implements HttpHandler {
 
     exchange.dispatch(EXECUTOR, () -> {
 
+      LOGGER.info("Send metadata for {}", exchange.getRequestHeaders().getFirst(CORRELATION_ID));
+
       try {
-        dataBaseHandler.handleRequest(exchange);
+        next.handleRequest(exchange);
       } catch (final Exception exc) {
         throw new RuntimeException(exc);
       }
-
-      LOGGER.info("{} metadata writed", this.getClass().getSimpleName());
 
     });
 
